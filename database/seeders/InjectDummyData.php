@@ -11,6 +11,7 @@ use App\Models\Master\FeedbackWorkCategory;
 use App\Models\Master\Menu;
 use App\Models\Master\Module;
 use App\Models\Master\Organization;
+use App\Models\Master\Period;
 use App\Models\Master\Personal;
 use App\Models\Master\PersonalWorkUnit;
 use App\Models\Master\PerspectiveIndicator;
@@ -69,30 +70,13 @@ class InjectDummyData extends Seeder
             'icon' => 'icon-file-text2',
             'rank' => 1
         ]);
-
         Menu::create([
             'module_id' => $module->id,
             'group' => 'Master',
-            'title' => 'Bab Kuisioner',
-            'path' => 'questionnaire/section',
+            'title' => 'Template Jawaban',
+            'path' => 'questionnaire/answer-template',
             'icon' => 'icon-bookmark4',
             'rank' => 2
-        ]);
-        Menu::create([
-            'module_id' => $module->id,
-            'group' => 'Master',
-            'title' => 'Variabel',
-            'path' => 'questionnaire/variable',
-            'icon' => 'icon-lan3',
-            'rank' => 3
-        ]);
-        Menu::create([
-            'module_id' => $module->id,
-            'group' => 'Master',
-            'title' => 'Indikator',
-            'path' => 'questionnaire/indicator',
-            'icon' => 'icon-menu',
-            'rank' => 4
         ]);
         $module = Module::where('title', 'Hasil & Pelaporan')->first();
         Menu::create([
@@ -335,10 +319,16 @@ class InjectDummyData extends Seeder
             'answer_type' => 'radio',
             'answer_content' => $answer_template_choices
         ]);
-        for ($i = 1; $i <= 20; $i++) {
+        $period_2024 = Period::create([
+            'name' => 'Tahun 2024',
+            'start_date' => '2024-01-01',
+            'end_date' => '2024-12-31',
+        ]);
+        for ($i = 1; $i <= 100; $i++) {
             $faker = Factory::create();
             $question_result_header = QuestionResultHeader::create([
                 'questionnaire_id' => $questionnaire->id,
+                'period_id' => $period_2024->id,
                 'name' => $faker->name(),
                 'audience_type' => 'umum'
             ]);
@@ -354,7 +344,7 @@ class InjectDummyData extends Seeder
         }
         $superadmin = User::create([
             'name' => 'Superadmin Sistem',
-            'username' => '199005162024061003',
+            'username' => '12345678910',
             'password' => bcrypt('superadmin'),
         ]);
         $personalSuperadmin = Personal::create([

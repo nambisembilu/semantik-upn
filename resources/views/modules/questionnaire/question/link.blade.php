@@ -1,10 +1,6 @@
-@extends('template.master')
+@extends('template.master-nolayout')
 
 @section('title', $menu_title)
-
-@section('sidebar')
-    @include('template.sidebar')
-@endsection
 
 @section('page-head')
     <div class="page-header">
@@ -40,53 +36,8 @@
 
 @section('page-content')
     <div class="content container pt-0">
-
-        <!-- Basic card -->
-        <div class="card">
-            <div class="card-header">
-                <h6 class="mb-0">Header - Kuisioner</h6>
-            </div>
-
-            <div class="card-body">
-
-                @if($errors->any())
-                    <div class="alert alert-danger alert-icon-start alert-dismissible">
-                        <span class="alert-icon bg-danger text-white">
-                            <i class="ph-x-circle"></i>
-                        </span>
-                        <span class="fw-semibold"> Gagal !</span> {{$errors->first()}}.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                @endif
-                <form action="@if($data) {{route($route.'save')}} @else {{route($route.'store')}} @endif" method="post">
-                    @csrf
-                    @if($data)
-                        <input type="hidden" name="id" value="{{$data->id}}">
-                    @endif
-                    <div class="mb-3">
-                        <label class="form-label">Judul :</label>
-                        <input type="text" name="title" class="form-control" placeholder="Judul Kuisioner" @if($data) value="{{$data->title}}" @endif>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Deskripsi:</label>
-                        <input type="text" name="description" class="form-control" placeholder="Deskripsi" @if($data) value="{{$data->description}}" @endif>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label">Pedoman:</label>
-                        <textarea name="guidelines" class="form-control" placeholder="Pedoman pengisian kuisioner"></textarea>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <button type="submit" class="btn btn-primary ms-3"><i class="ph-check me-2"></i> Simpan</button>
-                    </div>
-                </form>
-            </div>
-        </div>
         <!-- /basic card -->
         <div class="card">
-            <div class="card-header">
-                <h6 class="mb-0">Body - Kuisioner</h6>
-            </div>
 
             <div class="card-body">
                 <table class="table table-bordered">
@@ -147,19 +98,10 @@
                         @endif
                     @endforeach
                     <tr>
-                        <td class="text-center">
+                        <td class="text-center ">
                             <div class="p-3">
-                                <button class="btn btn-success">
-                                    <i class="ph-plus"></i> Pertanyaan
-                                </button>
-                                <button class="btn btn-indigo">
-                                    <i class="ph-plus"></i> Variabel
-                                </button>
-                                <button class="btn btn-info">
-                                    <i class="ph-plus"></i> Indikator
-                                </button>
                                 <button class="btn btn-primary">
-                                    <i class="ph-plus"></i> Sub Bagian
+                                    <i class="ph-check"></i> Simpan
                                 </button>
                             </div>
                         </td>

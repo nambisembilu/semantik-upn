@@ -9,6 +9,7 @@ use App\Models\Master\Questionnaire;
 use App\Models\Transaction\SkpArchive;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Yajra\DataTables\Facades\DataTables;
@@ -44,7 +45,7 @@ class QuestionnaireQuestionController extends Controller
             'menu_title' => $this->menu_title,
             'data' => [],
         ];
-        return view($this->view . 'form', $param);
+        return view($this->route . 'form', $param);
     }
 
     public function store(Request $request)
@@ -52,14 +53,13 @@ class QuestionnaireQuestionController extends Controller
         request()->validate($this->validate_fields);
         DB::beginTransaction();
         try {
-            $data = new Period();
+            $data = new Questionnaire();
+            $data->organization_id = $request->organization_id;
+            $data->unit_id = $request->unit_id;
+            $data->title = $request->title;
             $data->description = $request->description;
-            $data->start_period = $request->start_period;
-            $data->end_period = $request->end_period;
-            $data->year = $request->year;
+            $data->guidlines = $request->guidlines;
             $data->save();
-
-            $this->bulk_import_data_from_previous($data);
 
             DB::commit();
             return redirect(route($this->route . 'index'))->with([
@@ -77,9 +77,9 @@ class QuestionnaireQuestionController extends Controller
         $param = [
             'route' => $this->route,
             'menu_title' => $this->menu_title,
-            'data' => Period::find($id),
+            'data' => Questionnaire::find($id),
         ];
-        return view($this->view . 'form', $param);
+        return view($this->route . 'form', $param);
     }
 
     public function save(Request $request)
@@ -88,11 +88,12 @@ class QuestionnaireQuestionController extends Controller
         DB::beginTransaction();
         try {
             $id = $request->id;
-            $data = Period::find($id);
+            $data = Questionnaire::find($id);
+            $data->organization_id = $request->organization_id;
+            $data->unit_id = $request->unit_id;
+            $data->title = $request->title;
             $data->description = $request->description;
-            $data->start_period = $request->start_period;
-            $data->end_period = $request->end_period;
-            $data->year = $request->year;
+            $data->guidlines = $request->guidlines;
             $data->save();
             DB::commit();
             return redirect(route($this->route . 'index'))->with([
@@ -110,15 +111,7 @@ class QuestionnaireQuestionController extends Controller
         DB::beginTransaction();
         try {
             $id = $request->id;
-            $data = Period::find($id);
-
-            $pwu = PersonalWorkUnit::where(['period_id' => $data->id])->first();
-            if (!empty($pwu)) {
-                return Redirect::back()->with([
-                    'toast-warning' => 'warning',
-                    'warning' => 'Data tidak dapat dihapus, data sudah digunakan di personal unit kerja'
-                ]);
-            }
+            $data = Questionnaire::find($id);
 
             $data->delete();
             DB::commit();
@@ -132,12 +125,26 @@ class QuestionnaireQuestionController extends Controller
         }
     }
 
+    public function link($encryptedId)
+    {
+        $id= Crypt::decryptString($encryptedId);
+        $param = [
+            'route' => $this->route,
+            'menu_title' => $this->menu_title,
+            'data' => Questionnaire::find($id),
+        ];
+        return view($this->route . 'link', $param);
+    }
+
     public function datatable(Request $request)
     {
         $data = Questionnaire::get();
         return DataTables::of($data)->addColumn('action', function ($d) {
             $html = '
                 <div class="d-flex justify-content-center">
+                    <button tooltip="Copy Public Link" onclick="copyClipboard(\'' . route($this->route . 'link', Crypt::encryptString($d->id)) . '\')" class="btn btn-sm btn-success btn-icon me-1 btn-copy-link">
+                        <i class="ph-share"></i>
+                    </button>
                     <a href="' . route($this->route . 'edit', $d->id) . '" class="btn btn-sm btn-primary btn-icon me-1">
                         <i class="ph-pencil"></i>
                     </a>

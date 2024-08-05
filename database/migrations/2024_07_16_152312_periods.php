@@ -4,18 +4,18 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('question_result_headers', function (Blueprint $table) {
+        Schema::create('periods', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('questionnaire_id');
-            $table->unsignedBigInteger('period_id');
-            $table->string('name');
-            $table->string('audience_type')->comment("Dosen/Mahasiswa/Umum/Pegawai");
+            $table->string('name')->nullable();
+            $table->date('start_date');
+            $table->string('end_date');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->unsignedBigInteger('updated_by')->nullable();
             $table->unsignedBigInteger('deleted_by')->nullable();

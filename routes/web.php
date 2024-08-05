@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DefaultController;
+use App\Http\Controllers\Modules\Questionnaire\QuestionnaireQuestionController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Modules\Master\PeriodController;
@@ -26,3 +27,7 @@ require __DIR__ . '/auth.php';
 Route::middleware(['auth'])->group(function () {
     require __DIR__ . '/module.php';
 });
+
+// Public Link
+Route::get('/questionnaire/link/{id}', [QuestionnaireQuestionController::class, 'link'])->name( 'modules.questionnaire.question.link');
+

@@ -107,8 +107,9 @@
                     "lengthMenu": [10, 25, 50, 100],
                     "scrollX": true,
                     "columns": [
-                        {data: 'title', title: 'judul', orderable: false, searchable: true},
+                        {data: 'title', title: 'Judul Kuisioner', orderable: false, searchable: true},
                         {data: 'description', title: 'Deskripsi', orderable: false, searchable: true},
+                        {data: 'guidelines', title: 'Pedoman', orderable: false, searchable: true},
                         {
                             data: 'action', className: 'text-center', title: 'Action', orderable: false, searchable: false,
                             render: function (data) {
@@ -170,6 +171,16 @@
                     parent.querySelectorAll('form')[0].submit();
                 }
             });
+        }
+
+        function copyClipboard(copyText){
+            navigator.clipboard.writeText(copyText);
+            toastr.options = {
+                "positionClass": "toast-bottom-right",
+                "showDuration": "2000",
+                "timeOut": "2000",
+            }
+            toastr.success('Link copied')
         }
     </script>
 @endpush
